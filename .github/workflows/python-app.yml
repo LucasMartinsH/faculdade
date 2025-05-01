@@ -1,8 +1,10 @@
-name: Python CI
+name: Python CI - Testes Automatizados
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ dev ]
+  push:
+    branches: [ dev ]
 
 jobs:
   test:
@@ -22,6 +24,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
 
-    - name: Rodar testes
+    - name: Executar testes com pytest
       run: |
         pytest
