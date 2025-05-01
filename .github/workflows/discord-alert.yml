@@ -1,11 +1,11 @@
-name: Alerta no Discord (com embed)
+name: Alerta no Discord
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
   pull_request:
     types: [ closed ]
-    branches: [ main ]
+    branches: [ dev ]
 
 jobs:
   notify:
