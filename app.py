@@ -8,3 +8,4 @@ git add app.py
 git commit -m "Adiciona estrutura base do app"
 
 # Repita até completar 5 commits.
+def soma(a, b): return a + b
