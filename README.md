@@ -1,1 +1,1 @@
-# Meu Projeto DevOps
+# Projeto de exemplo para CI/CD
