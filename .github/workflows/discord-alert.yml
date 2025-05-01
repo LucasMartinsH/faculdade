@@ -1,0 +1,51 @@
+name: Alerta no Discord (com embed)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [ closed ]
+    branches: [ main ]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || (github.event.pull_request.merged == true)
+
+    steps:
+    - name: Enviar alerta embed para o Discord
+      run: |
+        if [ "${{ github.event_name }}" == "push" ]; then
+          EVENTO="📦 Novo *push* no repositório"
+          LINK="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+          MENSAGEM="${{ github.event.head_commit.message }}"
+          TIPO="Push"
+        else
+          EVENTO="✅ *Pull Request* com merge"
+          LINK="${{ github.event.pull_request.html_url }}"
+          MENSAGEM="${{ github.event.pull_request.title }}"
+          TIPO="Pull Request"
+        fi
+
+        curl -H "Content-Type: application/json" \
+        -X POST \
+        -d "{
+          \"embeds\": [{
+            \"title\": \"${EVENTO}\",
+            \"color\": 5814783,
+            \"url\": \"${LINK}\",
+            \"fields\": [
+              {\"name\": \"📁 Repositório\", \"value\": \"${{ github.repository }}\", \"inline\": true},
+              {\"name\": \"🔁 Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true},
+              {\"name\": \"👤 Autor\", \"value\": \"@${{ github.actor }}\", \"inline\": true},
+              {\"name\": \"📝 Mensagem\", \"value\": \"${MENSAGEM}\", \"inline\": false},
+              {\"name\": \"🔗 Link para ${TIPO}\", \"value\": \"[Clique aqui](${LINK})\", \"inline\": false}
+            ],
+            \"footer\": {
+              \"text\": \"GitHub Actions • CI/CD Ativo\",
+              \"icon_url\": \"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png\"
+            },
+            \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+          }]
+        }" \
+        ${{ secrets.DISCORD_WEBHOOK_URL }}
