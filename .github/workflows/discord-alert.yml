@@ -1,4 +1,4 @@
-name: Alerta no Discord (teste)
+name: Alerta no Discord PR (teste)
 
 on:
   push:
